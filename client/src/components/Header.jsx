@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import NavItems from "./NavItems";
+import UserDropdown from "./UserDropdown";
 const Header = () => {
     return (
         <header className="sticky top-0 bg-neutral-900 p-2">
@@ -9,12 +11,11 @@ const Header = () => {
                     />
                 </Link>
 
-                <div className="flex items-center gap-15">
-                    <Link to="/">Home</Link>
-                    <Link to="/search">Search</Link>
-                    <Link to="/watchlist">Watchlist</Link>
-                </div>
-                <h1>DNR</h1>
+                <nav className="hidden sm:flex items-center gap-15">
+                <NavItems/>
+                </nav>
+                
+                <UserDropdown/>
             </div>
         </header>
     );
