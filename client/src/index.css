@@ -132,4 +132,14 @@
   .header-wrapper {
     @apply flex items-center justify-between;
   }
+    .home-wrapper {
+    @apply text-gray-400 flex-col gap-4 md:gap-10 items-center sm:items-start;
+  }
 }
+
+.tradingview-widget-container {
+  position: relative;
+  background-color: #141414 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+} 
