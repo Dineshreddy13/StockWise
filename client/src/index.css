@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-poppins: "poppins", "arial";
+--font-poppins: "poppins", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
 }
 
 @theme inline {
@@ -125,7 +125,7 @@
 }
 
 
-@layer components {
+@layer utilities {
   .flex-center {
     @apply flex items-center justify-center;
   }
@@ -135,6 +135,10 @@
     .home-wrapper {
     @apply text-gray-400 flex-col gap-4 md:gap-10 items-center sm:items-start;
   }
+  .form-input {
+    @apply h-12 px-3 py-3 text-white text-base placeholder:text-gray-500 border-gray-600 bg-gray-800 rounded-lg focus:!border-yellow-500 focus:ring-0;
+  }
+  
 }
 
 .tradingview-widget-container {
