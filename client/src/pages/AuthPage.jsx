@@ -1,10 +1,31 @@
 import { useState } from "react";
 import SignIn from "@/auth/signin/SignIn";
 import SignUp from "@/auth/signup/SignUp";
+import { Navigate } from "react-router-dom";
 
 
-const AuthPage = () =>  {
+const AuthPage = () => {
   const [isSignIn, setIsSignIn] = useState(true); // default: Sign In
+
+  const token = localStorage.getItem("token");
+
+  // If user is logged in, redirect to dashboard
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const now = Date.now() / 1000;
+
+      if (payload.exp > now) {
+        return <Navigate to="/" replace />;
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+  }
 
   return (
     <main className="min-h-screen flex flex-col lg:flex-row gap-3 lg:p-15 overflow-hidden">

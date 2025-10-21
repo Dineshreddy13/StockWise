@@ -1,30 +1,57 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
     username: {
-        type: String, 
-        required: [true, "User Name is required"],
-        trim: true,
-        match: [/^[\w.]+$/, "Name can contain only letters, numbers, underscores, and dots"],
-        minLength: [3, "name must be atleast 3 character long"],
-        maxLength: [50, "name must be less than or equal to 50 characters."],
+      type: String,
+      required: [true, "User name is required"],
+      trim: true,
+      match: [/^[\w.]+$/, "Name can contain only letters, numbers, underscores, and dots"],
+      minLength: [3, "Name must be at least 3 characters long"],
+      maxLength: [50, "Name must be less than or equal to 50 characters."],
     },
 
     email: {
-        type: String,
-        required: [true, "email is required"],
-        unique: true,
-        trim: true,
-        lowercase: true,
-        match: [/^\S+@\S+\.\S+$/, "please fill a valid email address"],
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, "Please fill a valid email address"],
     },
 
     password: {
-        type: String,
-        required: [true, "User Password is required."],
-        minLength: 6,
-    }
-}, {timestamps: true});
+      type: String,
+      required: [true, "Password is required"],
+      minLength: [6, "Password must be at least 6 characters long"],
+    },
+
+    country: {
+      type: String,
+      required: [true, "Country is required"],
+      default: "US",
+    },
+
+    investmentGoals: {
+      type: String,
+      enum: ["Growth", "Income", "Preservation", "Speculation"], // adjust based on INVESTMENT_GOALS constant
+      default: "Growth",
+    },
+
+    riskTolerance: {
+      type: String,
+      enum: ["Low", "Medium", "High"], // adjust based on RISK_TOLERANCE_OPTIONS constant
+      default: "Medium",
+    },
+
+    preferredIndustry: {
+      type: String,
+      enum: ["Technology", "Finance", "Healthcare", "Energy", "Other"], // adjust based on PREFERRED_INDUSTRIES constant
+      default: "Technology",
+    },
+  },
+  { timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 

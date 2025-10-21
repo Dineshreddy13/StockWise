@@ -5,52 +5,74 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/env.js";
 import { json } from "express";
 
-export const SignUp = async(req, res, next) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+export const SignUp = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    try {
-        const {username, email, password} = req.body
-        const existingUser = await User.findOne({email});
-        if(existingUser) {
-            const error = new Error("User already exists");
-            error.statusCode = 409;
-            throw error;
-        }
+  try {
+    const {
+      username,
+      email,
+      password,
+      country,
+      investmentGoals,
+      riskTolerance,
+      preferredIndustry,
+    } = req.body;
 
-        if(!password || password.length < 6) {
-            const error = new Error("Password must be 6 characters long.");
-            error.statusCode = 400;
-            throw error;
-        }
-        
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const newUsers = await User.create([{
-            username,
-            email,
-            password: hashedPassword,
-
-        }],{session})
-        
-        const token = jwt.sign({ userId: newUsers[0]._id},JWT_SECRET, {expiresIn: JWT_EXPIRES_IN});
-
-        await session.commitTransaction();
-        res.status(201).json({
-            success: true,
-            message: "User Created Scuccessfully",
-            data : {
-                token, 
-                user: newUsers[0],
-            },
-        })
-
-    }catch(error) {
-        await session.abortTransaction();
-        session.endSession();
-        next(error);
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      const error = new Error("User already exists");
+      error.statusCode = 409;
+      throw error;
     }
-}
+
+    if (!password || password.length < 6) {
+      const error = new Error("Password must be at least 6 characters long.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUsers = await User.create(
+      [
+        {
+          username,
+          email,
+          password: hashedPassword,
+          country,
+          investmentGoals,
+          riskTolerance,
+          preferredIndustry,
+        },
+      ],
+      { session }
+    );
+
+    const token = jwt.sign(
+      { userId: newUsers[0]._id },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
+    );
+
+    await session.commitTransaction();
+    res.status(201).json({
+      success: true,
+      message: "User Created Successfully",
+      data: {
+        token,
+        user: newUsers[0],
+      },
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    next(error);
+  }
+};
+
 export const SignIn = async(req, res, next) => {
     try {
         const {email, password} = req.body;

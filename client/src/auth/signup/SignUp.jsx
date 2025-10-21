@@ -5,8 +5,13 @@ import SelectField from "@/components/forms/SelectField";
 import { INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS } from "@/lib/constants";
 import { CountrySelectField } from "@/components/forms/CountryField";
 import FooterLink from "@/components/forms/FooterLink";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "@/api/axiosInstance";
+import useAuth from "@/hooks/useAuth";
 
 const SignUp = ({ onSwitch }) => {
+    const {setUser} = useAuth();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -14,7 +19,7 @@ const SignUp = ({ onSwitch }) => {
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            fullName: "",
+            username: "",
             email: "",
             password: "",
             country: "US",
@@ -26,21 +31,32 @@ const SignUp = ({ onSwitch }) => {
 
     });
 
-    const onSubmit = async(data) => {
-        try{
-            console.log(data);
-        }catch(e) {
-            console.error(e);
-        }
+  const onSubmit = async (data) => {
+    console.log(data);
+    
+    try {
+      const response = await axiosInstance.post("/auth/sign-up", data);
+      const { token, user } = response.data.data;
+      localStorage.setItem("token", token);
+      setUser(user);
+      navigate("/");
+    } catch (error) {
+            console.error("Full signup error:", error.response || error);
+
+      const message =
+        error.response?.data?.message ||
+        "Something went wrong during signup. Please try again.";
+      console.error("Signup error:", message);
     }
+  };
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full ">
             <InputField
-                name="fullName"
-                label="Full Name"
+                name="username"
+                label="Username"
                 placeholder="Username"
                 register= {register}
-                error = {errors.fullName}
+                error = {errors.username}
                 validation={{required: "full name is required", minLength:2}}
             />
             <InputField

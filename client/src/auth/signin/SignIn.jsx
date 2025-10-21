@@ -2,8 +2,13 @@ import { useForm } from "react-hook-form";
 import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
 import FooterLink from "@/components/forms/FooterLink";
+import axiosInstance from "@/api/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const SignIn = ({ onSwitch }) => {
+    const {setUser} = useAuth();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -16,13 +21,24 @@ const SignIn = ({ onSwitch }) => {
         mode: "onBlur",
     });
 
-    const onSubmit = async(data) => {
-        try {
-            console.log(data);
-        }catch(e) {
-            console.error(e);
-        }
+  const onSubmit = async (data) => {
+    try {
+      const response = await axiosInstance.post("/auth/sign-in", data);
+      const { token, user } = response.data.data;
+      setUser(user);
+      localStorage.setItem("token", token);
+
+      navigate("/");
+
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Something went wrong during signin. Please try again.";
+      console.error("Signin error:", message);
     }
+  };
 
 
     return (

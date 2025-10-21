@@ -1,25 +1,29 @@
-import { BrowserRouter as Router , Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router , Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Dashboard from "./pages/Dashboard";
 import Search from "./pages/Search";
 import WatchList from "./pages/WatchList";
 import AuthPage from "./pages/AuthPage";
+import ProtectedRoute from "./auth/ProtectedRoute"; // ✅ import this
 
 function App() {
   return (
-    <>
     <Router>
       <Routes>
-        <Route element={<MainLayout/>}>
-          <Route path="/" element={<Dashboard/>} />
-          <Route path="/search" element={<Search/>} />
-          <Route path="/watchlist" element={<WatchList/>} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/watchlist" element={<WatchList />} />
+          </Route>
         </Route>
-          <Route path="/auth" element={<AuthPage/>} />
+
+        {/* Public route */}
+        <Route path="/auth" element={<AuthPage />} />
       </Routes>
-    </Router> 
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
