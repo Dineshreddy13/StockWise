@@ -10,6 +10,7 @@ import { Loader2, TrendingUp } from "lucide-react";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Link } from "react-router-dom";
+import { Star } from "lucide-react";
 
 export default function SearchCommand({ renderAs = "button", label = "Add stock", initialStocks }) {
   const [open, setOpen] = useState(false);
@@ -99,7 +100,7 @@ export default function SearchCommand({ renderAs = "button", label = "Add stock"
               {displayStocks?.map((stock) => (
                 <li key={stock.symbol} className="search-item">
                   <Link
-                    href={`/stocks/${stock.symbol}`}
+                    to={`/stocks/${stock.symbol}`}
                     onClick={handleSelectStock}
                     className="search-item-link"
                   >
@@ -110,7 +111,7 @@ export default function SearchCommand({ renderAs = "button", label = "Add stock"
                         {stock.symbol} | {stock.exchange} | {stock.type}
                       </div>
                     </div>
-                    {/* <Star /> */}
+                    <Star />
                   </Link>
                 </li>
               ))}
