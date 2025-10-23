@@ -108,7 +108,7 @@ export const CountrySelectField = ({
 }) => {
   return (
     <div className='mb-5'>
-      <Label htmlFor={name} className='form-label'>
+      <Label htmlFor={name} className='mb-1'>
         {label}
       </Label>
 

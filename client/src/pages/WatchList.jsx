@@ -1,233 +1,234 @@
-"use client";
-
 import { useEffect, useState, useRef } from "react";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import SearchCommand from "@/components/SearchCommand";
 import WatchlistButton from "@/components/WatchlistButton";
 import { getWatchlist } from "@/lib/actions/watchlist.actions";
-import { getStockDetails, searchStocks } from "@/lib/actions/finnhub.actions";
+import { getStockDetails, searchStocks, getNews } from "@/lib/actions/finnhub.actions";
 
 const WATCHLIST_TABLE_HEADER = [
-    "Company",
-    "Symbol",
-    "Price",
-    "Change",
-    "Market Cap",
-    "P/E Ratio",
-    "Remove",
+  "Company",
+  "Symbol",
+  "Price",
+  "Change",
+  "Market Cap",
+  "P/E Ratio",
+  "Remove",
 ];
 
 export default function Watchlist() {
-    const [watchlist, setWatchlist] = useState([]);
-    const [stockDetails, setStockDetails] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [initialStocks, setInitialStocks] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
+  const [stockDetails, setStockDetails] = useState([]);
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [initialStocks, setInitialStocks] = useState([]);
+  const hasFetched = useRef(false);
 
-    // ✅ A ref to ensure we only run once
-    const hasFetched = useRef(false);
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
 
-    useEffect(() => {
-        if (hasFetched.current) return;
-        hasFetched.current = true; // prevents re-runs
+    const fetchData = async () => {
+      try {
+        setLoading(true);
 
-        const fetchData = async () => {
-            try {
-                setLoading(true);
+        // 1️⃣ Get watchlist
+        const list = await getWatchlist();
+        if (!Array.isArray(list) || list.length === 0) {
+          setWatchlist([]);
+          setLoading(false);
+          return;
+        }
 
-                // 1️⃣ Get user's watchlist
-                const list = await getWatchlist();
-                if (!Array.isArray(list) || list.length === 0) {
-                    setWatchlist([]);
-                    setLoading(false);
-                    return;
-                }
+        setWatchlist(list);
 
-                setWatchlist(list);
+        // 2️⃣ Fetch stock details
+        const details = await Promise.allSettled(
+          list.map((item) => getStockDetails(item.symbol))
+        );
 
-                // 2️⃣ Fetch all stock details (rate-limited and parallelized)
-                const details = await Promise.allSettled(
-                    list.map((item) => getStockDetails(item.symbol))
-                );
+        const validDetails = details
+          .filter((d) => d.status === "fulfilled")
+          .map((d) => d.value);
 
-                // 3️⃣ Only include successful results
-                console.log("Stock details received:")
-                console.log(details);
-                const validDetails = details
-                    .filter((d) => d.status === "fulfilled")
-                    .map((d) => d.value);
+        setStockDetails(validDetails);
 
-                console.log(validDetails);
-                setStockDetails(validDetails);
+        // 3️⃣ Fetch news for all symbols
+        const symbols = list.map((item) => item.symbol).join(",");
+        if (symbols) {
+          const newsData = await getNews(symbols);
+          setNews(newsData);
+        }
 
-                // 4️⃣ Load popular stocks for search palette (optional)
-                const stocks = await searchStocks("");
-                setInitialStocks(stocks);
-            } catch (err) {
-                console.error("Error loading watchlist:", err);
-                toast.error("Failed to load watchlist");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    // 🗑️ Handle local remove
-    const handleRemove = (symbol) => {
-        setWatchlist((prev) => prev.filter((s) => s.symbol !== symbol));
-        setStockDetails((prev) => prev.filter((s) => s.symbol !== symbol));
+        // 4️⃣ Load initial search stocks
+        const stocks = await searchStocks("");
+        setInitialStocks(stocks);
+      } catch (err) {
+        console.error("Error loading watchlist:", err);
+        toast.error("Failed to load watchlist");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // ⚙️ Empty state
-    if (!loading && watchlist.length === 0) {
-        return (
-            <section className="flex watchlist-empty-container">
-                <div className="watchlist-empty">
-                    <Star className="watchlist-star" />
-                    <h2 className="empty-title">Your watchlist is empty</h2>
-                    <p className="empty-description">
-                        Start building your watchlist by searching for stocks and clicking the star icon to add them.
-                    </p>
-                </div>
-                <SearchCommand initialStocks={initialStocks} />
-            </section>
-        );
-    }
+    fetchData();
+  }, []);
 
+  const handleRemove = (symbol) => {
+    setWatchlist((prev) => prev.filter((s) => s.symbol !== symbol));
+    setStockDetails((prev) => prev.filter((s) => s.symbol !== symbol));
+  };
+
+  // 🧩 Group news by related symbol
+  const groupedNews = news.reduce((acc, article) => {
+    const sym = article.related || "Other";
+    if (!acc[sym]) acc[sym] = [];
+    acc[sym].push(article);
+    return acc;
+  }, {});
+
+  if (!loading && watchlist.length === 0) {
     return (
-       <section className="watchlist max-w-[85vw] mx-auto mt-10">
-  <div className="flex flex-col lg:flex-row gap-6">
-    {/* Table Section */}
-    <div className="flex-1 lg:max-w-[75%]">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="watchlist-title">Watchlist</h2>
+      <section className="flex watchlist-empty-container">
+        <div className="watchlist-empty">
+          <Star className="watchlist-star" />
+          <h2 className="empty-title">Your watchlist is empty</h2>
+          <p className="empty-description">
+            Start building your watchlist by searching for stocks and clicking the star icon to add them.
+          </p>
+        </div>
         <SearchCommand initialStocks={initialStocks} />
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-[60vh] text-gray-400">
-          Loading your watchlist...
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border border-gray-700">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {WATCHLIST_TABLE_HEADER.map((header) => (
-                  <TableHead key={header}>{header}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {stockDetails.map((stock, i) => (
-                <TableRow key={i}>
-                  <TableCell>{stock.company || "—"}</TableCell>
-                  <TableCell>{stock.symbol}</TableCell>
-                  <TableCell>{stock.priceFormatted || `\$${stock.currentPrice?.toFixed(2)}` || "—"}</TableCell>
-                  <TableCell
-                    className={stock.changePercent >= 0 ? "text-green-500" : "text-red-500"}
-                  >
-                    {stock.changeFormatted || `${stock.changePercent?.toFixed(2)}%` || "—"}
-                  </TableCell>
-                  <TableCell>{stock.marketCapFormatted || "—"}</TableCell>
-                  <TableCell>{stock.peRatio || "—"}</TableCell>
-                  <TableCell>
-                    <WatchlistButton
-                      symbol={stock.symbol}
-                      company={stock.company}
-                      isInWatchlist={true}
-                      onWatchlistChange={(_, added) => {
-                        if (!added) handleRemove(stock.symbol);
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
-    </div>
-
-    {/* News Section */}
-    <div className="flex-1 lg:max-w-[25%]">
-      <h3 className="text-xl font-semibold mb-4">News</h3>
-      <div className="space-y-4 max-h-[80%] overflow-y-auto">
-        {/* Example news card */}
-        <div className="border rounded-lg p-4 shadow-sm bg-neutral-900">
-          <h4 className="font-semibold">TSLA</h4>
-          <p className="text-gray-400">Tesla profits plunge despite selling more vehicles...</p>
-          <a
-            href="#"
-            className="text-blue-500 hover:underline mt-2 block"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Read more
-          </a>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm bg-neutral-900">
-          <h4 className="font-semibold">TSLA</h4>
-          <p className="text-gray-400">Tesla profits plunge despite selling more vehicles...</p>
-          <a
-            href="#"
-            className="text-blue-500 hover:underline mt-2 block"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Read more
-          </a>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm bg-neutral-900">
-          <h4 className="font-semibold">TSLA</h4>
-          <p className="text-gray-400">Tesla profits plunge despite selling more vehicles...</p>
-          <a
-            href="#"
-            className="text-blue-500 hover:underline mt-2 block"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Read more
-          </a>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm bg-neutral-900">
-          <h4 className="font-semibold">TSLA</h4>
-          <p className="text-gray-400">Tesla profits plunge despite selling more vehicles...</p>
-          <a
-            href="#"
-            className="text-blue-500 hover:underline mt-2 block"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Read more
-          </a>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm bg-neutral-900">
-          <h4 className="font-semibold">TSLA</h4>
-          <p className="text-gray-400">Tesla profits plunge despite selling more vehicles...</p>
-          <a
-            href="#"
-            className="text-blue-500 hover:underline mt-2 block"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Read more
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+      </section>
     );
+  }
+
+  return (
+    <section className="watchlist max-w-[85vw] mx-auto mt-10">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Table Section */}
+        <div className="flex-1 lg:max-w-[75%]">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="watchlist-title">Watchlist</h2>
+            <SearchCommand initialStocks={initialStocks} />
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center items-center h-[60vh] text-gray-400">
+              Loading your watchlist...
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-gray-700">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {WATCHLIST_TABLE_HEADER.map((header) => (
+                      <TableHead key={header}>{header}</TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {stockDetails.map((stock, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{stock.company || "—"}</TableCell>
+                      <TableCell>{stock.symbol}</TableCell>
+                      <TableCell>
+                        {stock.priceFormatted ||
+                          `$${stock.currentPrice?.toFixed(2)}` ||
+                          "—"}
+                      </TableCell>
+                      <TableCell
+                        className={
+                          stock.changePercent >= 0
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {stock.changeFormatted ||
+                          `${stock.changePercent?.toFixed(2)}%` ||
+                          "—"}
+                      </TableCell>
+                      <TableCell>{stock.marketCapFormatted || "—"}</TableCell>
+                      <TableCell>{stock.peRatio || "—"}</TableCell>
+                      <TableCell>
+                        <WatchlistButton
+                          symbol={stock.symbol}
+                          company={stock.company}
+                          isInWatchlist={true}
+                          onWatchlistChange={(_, added) => {
+                            if (!added) handleRemove(stock.symbol);
+                          }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
+
+        {/* 📰 Grouped News Section */}
+        <div className="flex-1 lg:max-w-[25%]">
+          <h3 className="text-xl font-semibold mb-4">News</h3>
+
+          {loading ? (
+            <div className="flex justify-center items-center h-[60vh] text-gray-400">
+              Loading news...
+            </div>
+          ) : news.length === 0 ? (
+            <p className="text-gray-400">No recent news for your watchlist.</p>
+          ) : (
+            <div className="space-y-6 max-h-[80vh] overflow-y-auto scrollbar-hide-default pr-2">
+              {Object.keys(groupedNews).map((symbol) => (
+                <div key={symbol}>
+                  <h4 className="font-semibold text-lg mb-2 border-b border-gray-700 pb-1">
+                    {symbol}
+                  </h4>
+                  <div className="space-y-3">
+                    {groupedNews[symbol].map((article) => (
+                      <div
+                        key={article.id}
+                        className="border rounded-lg p-3 bg-neutral-900 hover:bg-neutral-800 transition"
+                      >
+                        {article.image && (
+                          <img
+                            src={article.image}
+                            alt={article.headline}
+                            className="w-full h-32 object-cover rounded mb-2"
+                          />
+                        )}
+                        <h5 className="font-semibold text-sm mb-1">
+                          {article.headline}
+                        </h5>
+                        <p className="text-gray-400 text-sm line-clamp-2">
+                          {article.summary}
+                        </p>
+                        <a
+                          href={article.url}
+                          className="text-blue-500 hover:underline mt-1 block text-sm"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Read more
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
+

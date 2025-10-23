@@ -28,24 +28,46 @@ const AuthPage = () => {
   }
 
   return (
-    <main className="min-h-screen flex flex-col lg:flex-row gap-3 lg:p-15 overflow-hidden">
-      <section className="w-full lg:w-[40%] bg-neutral-900 p-6 rounded-xl overflow-y-auto lg:px-16">
+    <main className="min-h-screen flex flex-col lg:flex-row overflow-hidden">
+      {/* LEFT SECTION (scrollable only within itself) */}
+      <section
+        className={`w-full lg:w-[40%] ${isSignIn ? "lg:py-30" : "lg:py-5"
+          } bg-neutral-950 p-6 lg:px-16 overflow-y-auto scrollbar-hide-default lg:h-screen`}
+      >
         <div className="flex flex-col items-center gap-3">
-          <img src="./src/assets/stockwise.png" alt="logo"
-            className="h-[50px] w-auto rounded-md"
+          <img
+            src="./src/assets/stockwise.png"
+            alt="logo"
+            className="h-[60px] w-auto rounded-md"
           />
           <h2 className="mb-9 text-center">StockWise</h2>
         </div>
+
         {isSignIn ? (
           <SignIn onSwitch={() => setIsSignIn(false)} />
         ) : (
           <SignUp onSwitch={() => setIsSignIn(true)} />
         )}
       </section>
-      <section className="flex-1 bg-neutral-900 p-6 rounded-xl ">
 
+      {/* RIGHT SECTION (static image, not scrollable) */}
+      <section className="flex-1 bg-neutral-900 p-6 relative overflow-hidden">
+        <div className="absolute mt-10 ml-10">
+          <p >
+            Track, analyze, and stay ahead of the market — all in real time with <span className="text-yellow-500 text-2xl font-semibold">StockWise</span>.
+          </p>
+          <p>
+            Your personalized hub for stocks, trends, and insights.
+          </p>
+        </div>
+
+        <div className="relative top-1/5 left-1/10 ">
+          <img src="./src/assets/LoginImage.png" alt="StockWise image"
+            className="border-6 border-gray-800 rounded-2xl" />
+        </div>
       </section>
     </main>
+
   );
 }
 

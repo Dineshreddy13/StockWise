@@ -110,7 +110,7 @@ const SignUp = ({ onSwitch }) => {
                 error = {errors.preferredIndustry}
             />
 
-            <Button type="submit" disabled={isSubmitting} className="w-full mt-5" >
+            <Button type="submit" disabled={isSubmitting} className="w-full mt-5 submit-button" >
                 {isSubmitting ? "Creating Account" : "Start Your Investing Journey"}
             </Button>
 

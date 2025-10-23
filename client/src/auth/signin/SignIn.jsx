@@ -59,7 +59,7 @@ const SignIn = ({ onSwitch }) => {
                 error={errors.password}
                 validation={{required: "password is required", minLength: 6 }}
             />
-            <Button type="submit" className="w-full mt-5" disabled={isSubmitting} >
+            <Button type="submit" className="w-full mt-5 submit-button" disabled={isSubmitting} >
                 {isSubmitting? "Singing In": "Sign In"}
             </Button>
             

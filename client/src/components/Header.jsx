@@ -23,10 +23,11 @@ const Header = () => {
     return (
         <header className="sticky top-0 z-100 bg-neutral-900 p-2">
             <div className="max-w-[85vw] m-auto header-wrapper">
-                <Link to="/" >
+                <Link to="/" className="flex gap-3 items-center text-2xl font-semibold text-gray-300">
                     <img src="./src/assets/stockwise.png" alt="StockWise logo" height={32} width={140}
-                        className="h-15 w-auto cursor-pointer bg-black rounded-full flex-center p-1"
+                        className="h-14 w-auto cursor-pointer bg-black rounded-full flex-center p-1"
                     />
+                    StockWise
                 </Link>
 
                 <nav className="hidden sm:flex items-center gap-15">

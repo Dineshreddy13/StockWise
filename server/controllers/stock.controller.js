@@ -17,7 +17,7 @@ export async function getNewsController(req, res, next) {
     res.status(200).json(news);
   } catch (err) {
     next(err);
-  }
+  } 
 }
 
 export async function getStocksDetailsController(req, res, next) {
