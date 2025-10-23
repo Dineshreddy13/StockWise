@@ -6,6 +6,7 @@ import WatchList from "./pages/WatchList";
 import AuthPage from "./pages/AuthPage";
 import ProtectedRoute from "./auth/ProtectedRoute"; // ✅ import this
 
+
 function App() {
   return (
     <Router>

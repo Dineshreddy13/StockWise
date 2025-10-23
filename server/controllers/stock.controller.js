@@ -1,4 +1,4 @@
-import { getNews, searchStocks } from "../services/finnhub.service.js";
+import { getNews, searchStocks, getStocksDetails } from "../services/finnhub.service.js"; // <-- ADDED getStocksDetails
 
 export async function searchStocksController(req, res, next) {
   try {
@@ -17,5 +17,22 @@ export async function getNewsController(req, res, next) {
     res.status(200).json(news);
   } catch (err) {
     next(err);
+  }
+}
+
+export async function getStocksDetailsController(req, res, next) {
+  try {
+    // We expect the stock symbol to be passed as a route parameter (e.g., /stocks/details/AAPL)
+    const symbol = req.params.symbol; 
+    
+    if (!symbol) {
+        return res.status(400).json({ message: "Stock symbol is required" });
+    }
+    
+    const details = await getStocksDetails(symbol);
+    res.status(200).json(details);
+  } catch (err) {
+    // If getStocksDetails throws an error (e.g., invalid symbol or API failure)
+    next(err); 
   }
 }

@@ -6,10 +6,40 @@ export const searchStocks = async (query) => {
     const res = await axiosInstance.get("/stocks/search", {
       params: { q : query },
     });
-    console.log(res.data);
     return res.data || [];
   } catch (error) {
     console.error("Error fetching stocks:", error);
     return [];
+  }
+};
+
+export const getNews = async (symbols = "") => {
+  console.log('Fetching news for symbols:', symbols);
+  try {
+    const res = await axiosInstance.get("/stocks/news", {
+      params: { symbols: symbols },
+    });
+    return res.data || [];
+  } catch (error) {
+    console.error("Error fetching news:", error);
+    return [];
+  }
+};
+
+
+export const getStockDetails = async (symbol) => {
+  console.log('Fetching details for stock:', symbol);
+  if (!symbol) {
+    console.error("Symbol is required to fetch stock details.");
+    return null;
+  }
+  try {
+    // Note: The symbol is used as a URL parameter in this route
+    const res = await axiosInstance.get(`/stocks/details/${symbol}`);
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching details for ${symbol}:`, error);
+    // It's often better to re-throw here so the calling component can handle the error state
+    throw new Error("Failed to load stock details.");
   }
 };

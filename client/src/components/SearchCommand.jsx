@@ -101,6 +101,8 @@ export default function SearchCommand({ renderAs = "button", label = "Add stock"
                 <li key={stock.symbol} className="search-item">
                   <Link
                     to={`/stocks/${stock.symbol}`}
+                      state={{ company: stock.name }}
+
                     onClick={handleSelectStock}
                     className="search-item-link"
                   >
@@ -111,7 +113,7 @@ export default function SearchCommand({ renderAs = "button", label = "Add stock"
                         {stock.symbol} | {stock.exchange} | {stock.type}
                       </div>
                     </div>
-                    <Star />
+                    {/* <Star /> */}
                   </Link>
                 </li>
               ))}

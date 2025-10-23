@@ -24,3 +24,27 @@ export const formatArticle = (article, isCompanyNews, symbol, index = 0) => ({
   category: isCompanyNews ? 'company' : article.category || 'general',
   related: isCompanyNews ? symbol : article.related || '',
 });
+
+export const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format(price);
+};
+
+
+export const formatChangePercent = (changePercent) => {
+  if (!changePercent) return '';
+  const sign = changePercent > 0 ? '+' : '';
+  return `${sign}${changePercent.toFixed(2)}%`;
+};
+
+export function formatMarketCapValue(marketCapUsd) {
+  if (!Number.isFinite(marketCapUsd) || marketCapUsd <= 0) return 'N/A';
+
+  if (marketCapUsd >= 1e12) return `$${(marketCapUsd / 1e12).toFixed(2)}T`;
+  if (marketCapUsd >= 1e9) return `$${(marketCapUsd / 1e9).toFixed(2)}B`;
+  if (marketCapUsd >= 1e6) return `$${(marketCapUsd / 1e6).toFixed(2)}M`;
+  return `$${marketCapUsd.toFixed(2)}`;
+}

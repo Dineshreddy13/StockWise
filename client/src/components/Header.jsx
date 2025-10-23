@@ -13,8 +13,6 @@ const Header = () => {
             try {
                 const stocks = await searchStocks(""); // e.g. popular stocks
                 setInitialStocks(stocks);
-                console.log("initial Stocks:")
-                console.log(stocks)
             } catch (err) {
                 console.error("Failed to load initial stocks:", err);
                 setInitialStocks([]);
