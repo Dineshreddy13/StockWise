@@ -196,29 +196,19 @@ export default function Watchlist() {
                     {groupedNews[symbol].map((article) => (
                       <div
                         key={article.id}
-                        className="border rounded-lg p-3 bg-neutral-900 hover:bg-neutral-800 transition"
+                        className="border border-gray-700 rounded-lg p-4 bg-neutral-900 hover:bg-neutral-800 transition"
                       >
-                        {article.image && (
-                          <img
-                            src={article.image}
-                            alt={article.headline}
-                            className="w-full h-32 object-cover rounded mb-2"
-                          />
-                        )}
-                        <h5 className="font-semibold text-sm mb-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-sm text-neutral-800 bg-green-500 rounded-sm px-1">
+                            {article.related}
+                          </span>
+                        </div>
+                        <p className="font-medium text-gray-100 text-sm mb-1 leading-snug">
                           {article.headline}
-                        </h5>
-                        <p className="text-gray-400 text-sm line-clamp-2">
+                        </p>
+                        <p className="text-gray-400 text-sm leading-snug">
                           {article.summary}
                         </p>
-                        <a
-                          href={article.url}
-                          className="text-blue-500 hover:underline mt-1 block text-sm"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Read more
-                        </a>
                       </div>
                     ))}
                   </div>
