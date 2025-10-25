@@ -4,11 +4,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/env.js";
 import { json } from "express";
+import Watchlist from "../models/watchlist.model.js";
 
 export const SignUp = async (req, res, next) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const {
       username,
@@ -36,39 +34,28 @@ export const SignUp = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUsers = await User.create(
-      [
-        {
-          username,
-          email,
-          password: hashedPassword,
-          country,
-          investmentGoals,
-          riskTolerance,
-          preferredIndustry,
-        },
-      ],
-      { session }
-    );
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      country,
+      investmentGoals,
+      riskTolerance,
+      preferredIndustry,
+    });
 
     const token = jwt.sign(
-      { userId: newUsers[0]._id },
+      { userId: newUser._id },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
     );
 
-    await session.commitTransaction();
     res.status(201).json({
       success: true,
       message: "User Created Successfully",
-      data: {
-        token,
-        user: newUsers[0],
-      },
+      data: { token, user: newUser },
     });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     next(error);
   }
 };
@@ -103,6 +90,28 @@ export const SignIn = async(req, res, next) => {
     }
 
 }
-export const SignOut = async(req, res, next) => {
 
-}
+export const SignOut = async (req, res, next) => {
+  try {
+    const userId = req.user.id; // from JWT middleware
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Delete associated watchlist (if any)
+    await Watchlist.findOneAndDelete({ user: userId });
+
+    // Delete user
+    await User.findByIdAndDelete(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "User and associated watchlist deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
