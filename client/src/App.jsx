@@ -20,7 +20,6 @@ function App() {
           </Route>
         </Route>
 
-        {/* Public route */}
         <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </Router>

@@ -3,7 +3,6 @@ import { getUser, getCurrentUser } from "../controllers/user.controller.js";
 import autherize from "../middleware/auth.middleware.js";
 const userRouter = Router();
 
-// userRouter.get("/", getUsers);
 userRouter.get("/me", autherize, getCurrentUser);
 userRouter.get("/:id", autherize, getUser);
 

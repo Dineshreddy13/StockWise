@@ -40,7 +40,6 @@ export default function Watchlist() {
       try {
         setLoading(true);
 
-        // 1️⃣ Get watchlist
         const list = await getWatchlist();
         if (!Array.isArray(list) || list.length === 0) {
           setWatchlist([]);
@@ -50,7 +49,6 @@ export default function Watchlist() {
 
         setWatchlist(list);
 
-        // 2️⃣ Fetch stock details
         const details = await Promise.allSettled(
           list.map((item) => getStockDetails(item.symbol))
         );
@@ -61,14 +59,12 @@ export default function Watchlist() {
 
         setStockDetails(validDetails);
 
-        // 3️⃣ Fetch news for all symbols
         const symbols = list.map((item) => item.symbol).join(",");
         if (symbols) {
           const newsData = await getNews(symbols);
           setNews(newsData);
         }
 
-        // 4️⃣ Load initial search stocks
         const stocks = await searchStocks("");
         setInitialStocks(stocks);
       } catch (err) {
@@ -87,7 +83,6 @@ export default function Watchlist() {
     setStockDetails((prev) => prev.filter((s) => s.symbol !== symbol));
   };
 
-  // 🧩 Group news by related symbol
   const groupedNews = news.reduce((acc, article) => {
     const sym = article.related || "Other";
     if (!acc[sym]) acc[sym] = [];
@@ -175,7 +170,6 @@ export default function Watchlist() {
           )}
         </div>
 
-        {/* 📰 Grouped News Section */}
         <div className="flex-1 lg:max-w-[25%]">
           <h3 className="text-xl font-semibold mb-4">News</h3>
 

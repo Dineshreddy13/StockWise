@@ -20,7 +20,6 @@ const errorMiddleWare = (err, req, res, next) => {
       };
     }
 
-    // Validation error (Mongoose validators)
     if (err.name === "ValidationError") {
       const messages = {};
       for (let field in err.errors) {

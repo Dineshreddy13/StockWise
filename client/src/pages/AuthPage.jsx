@@ -9,7 +9,6 @@ const AuthPage = () => {
 
   const token = localStorage.getItem("token");
 
-  // If user is logged in, redirect to dashboard
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
@@ -29,7 +28,6 @@ const AuthPage = () => {
 
   return (
     <main className="min-h-screen flex flex-col lg:flex-row overflow-hidden">
-      {/* LEFT SECTION (scrollable only within itself) */}
       <section
         className={`w-full lg:w-[40%] ${isSignIn ? "lg:py-30" : "lg:py-5"
           } bg-neutral-950 p-6 lg:px-16 overflow-y-auto scrollbar-hide-default lg:h-screen`}
@@ -50,7 +48,6 @@ const AuthPage = () => {
         )}
       </section>
 
-      {/* RIGHT SECTION (static image, not scrollable) */}
       <section className="flex-1 bg-neutral-900 p-6 relative overflow-hidden">
         <div className="absolute mt-10 ml-10">
           <p >

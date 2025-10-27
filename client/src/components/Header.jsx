@@ -5,7 +5,6 @@ import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { useState, useEffect } from "react";
 
 const Header = () => {
-    // const initialStocks = await searchStocks();
     const [initialStocks, setInitialStocks] = useState([]);
 
     useEffect(() => {

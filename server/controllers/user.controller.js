@@ -16,7 +16,6 @@ export const getUser = async(req, res, next) => {
 
 export const getCurrentUser = async (req, res, next) => {
   try {
-    // `req.user` was set by your authorize middleware
     const user = await User.findById(req.user._id).select("-password");
 
     if (!user) {

@@ -93,18 +93,15 @@ export const SignIn = async(req, res, next) => {
 
 export const SignOut = async (req, res, next) => {
   try {
-    const userId = req.user.id; // from JWT middleware
+    const userId = req.user.id; 
 
-    // Check if user exists
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Delete associated watchlist (if any)
     await Watchlist.findOneAndDelete({ user: userId });
 
-    // Delete user
     await User.findByIdAndDelete(userId);
 
     return res.status(200).json({

@@ -5,7 +5,6 @@ import authMiddleware from "../middleware/auth.middleware.js";
 
 const watchlistRouter = Router();
 
-// All routes require authentication
 watchlistRouter.use(authMiddleware);
 
 watchlistRouter.get("/", getWatchlist);

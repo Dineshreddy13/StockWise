@@ -22,10 +22,8 @@ import countryList from 'react-select-country-list';
 const CountrySelect = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
 
-  // Get country options with flags
   const countries = countryList().getData();
 
-  // Helper function to get flag emoji
 const getFlagEmoji = (countryCode) => {
   if (!countryCode) return '';
   return countryCode

@@ -34,12 +34,10 @@ export const getStockDetails = async (symbol) => {
     return null;
   }
   try {
-    // Note: The symbol is used as a URL parameter in this route
     const res = await axiosInstance.get(`/stocks/details/${symbol}`);
     return res.data;
   } catch (error) {
     console.error(`Error fetching details for ${symbol}:`, error);
-    // It's often better to re-throw here so the calling component can handle the error state
     throw new Error("Failed to load stock details.");
   }
 };

@@ -14,7 +14,6 @@ const WatchlistButton = ({
 }) => {
   const [added, setAdded] = useState(!!isInWatchlist);
 
-  // ✅ Keep local state in sync with prop after reload/login
   useEffect(() => {
     setAdded(!!isInWatchlist);
   }, [isInWatchlist]);
@@ -24,7 +23,6 @@ const WatchlistButton = ({
     return added ? "Remove from Watchlist" : "Add to Watchlist";
   }, [added, type]);
 
-  // Handle add/remove
   const toggleWatchlist = async () => {
     const result = added
       ? await removeFromWatchlist(symbol)
@@ -37,7 +35,6 @@ const WatchlistButton = ({
         } your watchlist.`,
       });
 
-      // Notify parent for sync
       if (onWatchlistChange) onWatchlistChange(symbol, !added);
     }
   };
@@ -47,7 +44,7 @@ const WatchlistButton = ({
   const handleClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    setAdded(!added); // Optimistic update
+    setAdded(!added);
     debouncedToggle();
   };
 

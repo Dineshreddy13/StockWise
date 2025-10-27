@@ -22,7 +22,6 @@ export async function getNewsController(req, res, next) {
 
 export async function getStocksDetailsController(req, res, next) {
   try {
-    // We expect the stock symbol to be passed as a route parameter (e.g., /stocks/details/AAPL)
     const symbol = req.params.symbol; 
     
     if (!symbol) {
@@ -32,7 +31,6 @@ export async function getStocksDetailsController(req, res, next) {
     const details = await getStocksDetails(symbol);
     res.status(200).json(details);
   } catch (err) {
-    // If getStocksDetails throws an error (e.g., invalid symbol or API failure)
     next(err); 
   }
 }

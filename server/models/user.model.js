@@ -34,20 +34,18 @@ const userSchema = new mongoose.Schema(
 
     investmentGoals: {
       type: String,
-      enum: ["Growth", "Income", "Balanced", "Conservative"], // adjust based on INVESTMENT_GOALS constant
+      enum: ["Growth", "Income", "Balanced", "Conservative"], 
       default: "Growth",
     },
 
     riskTolerance: {
       type: String,
-      enum: ["Low", "Medium", "High"], // adjust based on RISK_TOLERANCE_OPTIONS constant
-      default: "Medium",
+      enum: ["Low", "Medium", "High"], 
     },
 
     preferredIndustry: {
       type: String,
-      enum: ["Technology", "Finance", "Healthcare", "Energy", "Consumer Goods"], // adjust based on PREFERRED_INDUSTRIES constant
-      default: "Technology",
+      enum: ["Technology", "Finance", "Healthcare", "Energy", "Consumer Goods"],
     },
   },
   { timestamps: true }

@@ -15,12 +15,3 @@ const FooterLink = ({text, linkText, onSwitch}) => {
 }
 
 export default FooterLink;
-
-    //   <p className="mt-4 text-sm text-gray-600 text-center">
-    //     Have an account?{" "}
-    //     <button
-    //       onClick={onSwitch}
-    //       className="text-blue-600 underline cursor-pointer">
-    //       Sign In
-    //     </button>
-    //   </p>

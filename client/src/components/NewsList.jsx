@@ -11,7 +11,7 @@ const NewsList = ({ news }) => {
 
   return (
     <div className="space-y-4 max-h-[800px] overflow-y-auto pr-2">
-      {news.slice(0, 10).map((article) => ( // Display top 10 articles
+      {news.slice(0, 10).map((article) => ( 
         <a
           key={article.id}
           href={article.url}
@@ -28,7 +28,7 @@ const NewsList = ({ news }) => {
                 src={article.image}
                 alt="News thumbnail"
                 className="w-16 h-12 object-cover rounded ml-3 flex-shrink-0"
-                onError={(e) => { e.target.style.display = 'none'; }} // Hide if image fails to load
+                onError={(e) => { e.target.style.display = 'none'; }} 
               />
             )}
           </div>

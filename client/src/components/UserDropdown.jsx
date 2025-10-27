@@ -31,13 +31,13 @@ const UserDropdown = () => {
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
-    logout(); // clears token & user
-    navigate("/auth"); // redirect to auth page
+    logout(); 
+    navigate("/auth"); 
   };
 
   const confirmSignOut = () => {
-    setOpen(false); // close modal
-    handleSignOut(); // call deletion
+    setOpen(false);
+    handleSignOut();
   };
 
   return (
@@ -101,7 +101,6 @@ const UserDropdown = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* ShadCN Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>

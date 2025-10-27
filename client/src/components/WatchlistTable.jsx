@@ -29,7 +29,6 @@ const WatchlistTable = ({ stocks, onRemove }) => {
           {stocks.map((stock) => (
             <TableRow key={stock.symbol} className="hover:bg-gray-700/50 transition-colors">
               
-              {/* Company & Symbol (Linked) */}
               <TableCell className="font-medium">
                 <Link to={`/stocks/${stock.symbol}`} state={{ company: stock.company }} className="flex items-center gap-2 hover:underline">
                     <TrendingUp className="h-4 w-4 text-green-500" />
@@ -42,31 +41,26 @@ const WatchlistTable = ({ stocks, onRemove }) => {
               
               <TableCell className="font-medium text-white">{stock.symbol}</TableCell>
 
-              {/* Price */}
               <TableCell className="text-white">{stock.priceFormatted}</TableCell>
 
-              {/* Change */}
               <TableCell 
                 className={stock.changePercent > 0 ? "text-green-500 font-semibold" : "text-red-500 font-semibold"}
               >
                 {stock.changeFormatted}
               </TableCell>
 
-              {/* Market Cap */}
               <TableCell className="text-gray-300">{stock.marketCapFormatted}</TableCell>
 
-              {/* P/E Ratio */}
               <TableCell className="text-gray-300">{stock.peRatio}</TableCell>
 
-              {/* Remove Button */}
               <TableCell>
                 <WatchlistButton 
                     symbol={stock.symbol} 
                     company={stock.company} 
-                    isInWatchlist={true} // Always true here
+                    isInWatchlist={true}
                     showTrashIcon={true} 
                     type="icon"
-                    onWatchlistChange={() => onRemove(stock.symbol)} // Call parent function on removal
+                    onWatchlistChange={() => onRemove(stock.symbol)}
                 />
               </TableCell>
 

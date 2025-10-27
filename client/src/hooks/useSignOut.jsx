@@ -9,10 +9,9 @@ const useSignOut = () => {
       const response = await axiosInstance.delete("/auth/sign-out");
       console.log(response.data);
 
-      // Remove token & optionally user data
       localStorage.removeItem("token");
 
-      navigate("/auth"); // redirect to login
+      navigate("/auth"); 
     } catch (error) {
       console.error("Error deleting account:", error);
       alert(
