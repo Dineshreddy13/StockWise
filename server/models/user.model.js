@@ -34,19 +34,29 @@ const userSchema = new mongoose.Schema(
 
     investmentGoals: {
       type: String,
-      enum: ["Growth", "Income", "Balanced", "Conservative"], 
+      enum: ["Growth", "Income", "Balanced", "Conservative"],
       default: "Growth",
     },
 
     riskTolerance: {
       type: String,
-      enum: ["Low", "Medium", "High"], 
+      enum: ["Low", "Medium", "High"],
     },
 
     preferredIndustry: {
       type: String,
       enum: ["Technology", "Finance", "Healthcare", "Energy", "Consumer Goods"],
     },
+
+    otp: {
+      type: String, 
+      default: null,
+    },
+    otpExpire: {
+      type: Date, 
+      default: null,
+    },
+
   },
   { timestamps: true }
 );

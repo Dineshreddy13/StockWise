@@ -3,7 +3,7 @@ import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
 import FooterLink from "@/components/forms/FooterLink";
 import axiosInstance from "@/api/axiosInstance";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 
 const SignIn = ({ onSwitch }) => {
@@ -13,7 +13,7 @@ const SignIn = ({ onSwitch }) => {
   const {
     register,
     handleSubmit,
-    setError, 
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -83,6 +83,15 @@ const SignIn = ({ onSwitch }) => {
           },
         }}
       />
+
+      <div className="text-right text-sm">
+        <Link
+          to="/forgot-password"
+          className="text-gray-500 hover:underline font-medium"
+        >
+          Forgot password?
+        </Link>
+      </div>
 
       <Button
         type="submit"

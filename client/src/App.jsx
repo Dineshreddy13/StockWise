@@ -4,7 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import StockPage from "./pages/StocksPage";
 import WatchList from "./pages/WatchList";
 import AuthPage from "./pages/AuthPage";
-import ProtectedRoute from "./auth/ProtectedRoute"; // ✅ import this
+import ProtectedRoute from "./auth/ProtectedRoute"; 
+import ForgotPassword from "./pages/ForgetPassword";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         </Route>
 
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </Router>
   );
