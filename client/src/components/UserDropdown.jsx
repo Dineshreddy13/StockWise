@@ -13,7 +13,7 @@ import { LogOut, UserRoundX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import NavItems from "./NavItems";
-import useSignOut from "@/hooks/useSignout";
+import useSignOut from "@/hooks/useSignOut";
 import {
   Dialog,
   DialogContent,

@@ -10,7 +10,10 @@ import adminRouter from "./routes/admin.routes.js";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://stock-wise-wvnj-2p0gmm96n-dineshreddy-13s-projects.vercel.app/'],
+  credentials: true
+}));
 app.use(express.json())
 
 app.use("/api/v1/auth", authRouter);
