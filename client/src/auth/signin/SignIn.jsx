@@ -30,7 +30,13 @@ const SignIn = ({ onSwitch }) => {
 
       setUser(user);
       localStorage.setItem("token", token);
-      navigate("/");
+
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+      
     } catch (error) {
       console.error("Signin error:", error);
 

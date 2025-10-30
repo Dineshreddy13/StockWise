@@ -6,6 +6,7 @@ import WatchList from "./pages/WatchList";
 import AuthPage from "./pages/AuthPage";
 import ProtectedRoute from "./auth/ProtectedRoute"; 
 import ForgotPassword from "./pages/ForgetPassword";
+import AdminDashboard from "./pages/AdminDashboard";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
 
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/admin" element={<AdminDashboard/>} />
       </Routes>
     </Router>
   );

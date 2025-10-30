@@ -13,7 +13,10 @@ const ProtectedRoute = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Render child routes
+  if (user.role === "admin" && !window.location.pathname.startsWith("/admin")) {
+    return <Navigate to="/admin" replace />;
+  }
+
   return <Outlet />;
 };
 

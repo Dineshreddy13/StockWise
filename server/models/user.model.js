@@ -26,6 +26,8 @@ const userSchema = new mongoose.Schema(
       minLength: [6, "Password must be at least 6 characters long"],
     },
 
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+
     country: {
       type: String,
       required: [true, "Country is required"],
@@ -49,11 +51,11 @@ const userSchema = new mongoose.Schema(
     },
 
     otp: {
-      type: String, 
+      type: String,
       default: null,
     },
     otpExpire: {
-      type: Date, 
+      type: Date,
       default: null,
     },
 

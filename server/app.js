@@ -6,6 +6,7 @@ import stockRouter from "./routes/stock.routes.js";
 import connectToDatabase from "./database/mongodb.js";
 import errorMiddleWare from "./middleware/error.middleware.js";
 import watchlistRouter from "./routes/watchlist.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 import cors from "cors";
 
 const app = express();
@@ -16,6 +17,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/stocks", stockRouter);
 app.use("/api/v1/watchlist", watchlistRouter);
+app.use("/api/v1/admin", adminRouter);
 
 
 
