@@ -34,7 +34,7 @@ const AuthPage = () => {
       >
         <div className="flex flex-col items-center gap-3">
           <img
-            src="./src/assets/stockwise.png"
+            src="./stockwise.png"
             alt="logo"
             className="h-[60px] w-auto rounded-md"
           />
@@ -59,7 +59,7 @@ const AuthPage = () => {
         </div>
 
         <div className="relative top-1/5 left-1/10 ">
-          <img src="./src/assets/LoginImage.png" alt="StockWise image"
+          <img src="./LoginImage.png" alt="StockWise image"
             className="border-6 border-gray-800 rounded-2xl" />
         </div>
       </section>
