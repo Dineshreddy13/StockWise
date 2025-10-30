@@ -20,11 +20,11 @@ function App() {
             <Route path="/stocks/:symbol" element={<StockPage />} />
             <Route path="/watchlist" element={<WatchList />} />
           </Route>
+          <Route path="/admin" element={<AdminDashboard/>} />
         </Route>
 
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/admin" element={<AdminDashboard/>} />
       </Routes>
     </Router>
   );
