@@ -62,40 +62,40 @@ export const SignUp = async (req, res, next) => {
   }
 };
 
-export const SignIn = async(req, res, next) => {
-    try {
-        const {email, password} = req.body;
-        const user = await User.findOne({email});
-        if(!user) {
-            const error = new Error("User not found");
-            error.statusCode = 404;
-            throw error;
-        }
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if(!isValidPassword) {
-            const error = new Error("incorrect password");
-            error.statusCode = 401;
-            throw error;
-        }
-        const token = jwt.sign({userId: user._id}, JWT_SECRET, {expiresIn: JWT_EXPIRES_IN});
-
-        res.status(200).json({
-            success: true,
-            message: "User signed in successfully",
-            data : {
-                token,
-                user,
-            }
-        });
-    }catch(error) {
-        next(error);
+export const SignIn = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
     }
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      const error = new Error("incorrect password");
+      error.statusCode = 401;
+      throw error;
+    }
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+    res.status(200).json({
+      success: true,
+      message: "User signed in successfully",
+      data: {
+        token,
+        user,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
 
 }
 
 export const SignOut = async (req, res, next) => {
   try {
-    const userId = req.user.id; 
+    const userId = req.user.id;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -130,7 +130,7 @@ export const ForgotPassword = async (req, res, next) => {
     const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
 
     user.otp = otpHash;
-    user.otpExpire = Date.now() + 5 * 60 * 1000; 
+    user.otpExpire = Date.now() + 5 * 60 * 1000;
     await user.save();
 
     const transporter = nodemailer.createTransport({
@@ -144,10 +144,175 @@ export const ForgotPassword = async (req, res, next) => {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: user.email,
-      subject: "Your OTP for Password Reset",
-      html: `<h3>Hello ${user.username}</h3>
-             <p>Your OTP for password reset is <b>${otp}</b>.</p>
-             <p>This OTP will expire in 5 minutes.</p>`,
+      subject: "Reset Your Password - OTP Verification",
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f6f9fc;
+            padding: 20px;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .greeting {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        
+        .message {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .otp-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .otp-code {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 8px;
+            letter-spacing: 8px;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .expiry-note {
+            text-align: center;
+            color: #e53e3e;
+            font-weight: 500;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #fed7d7;
+            border-radius: 6px;
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .warning {
+            background-color: #fffaf0;
+            border: 1px solid #fbd38d;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 25px 0;
+            font-size: 14px;
+            color: #744210;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #f7fafc;
+            color: #718096;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .support {
+            margin-top: 15px;
+            color: #4a5568;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .otp-code {
+                font-size: 28px;
+                padding: 12px 20px;
+                letter-spacing: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">StockWise</div>
+            <h1>Password Reset</h1>
+        </div>
+        
+        <div class="content">
+            <h2 class="greeting">Hello ${user.username}!</h2>
+            
+            <p class="message">
+                You requested to reset your password. Use the OTP code below to verify your identity and create a new password.
+            </p>
+            
+            <div class="otp-container">
+                <div class="otp-code">${otp}</div>
+            </div>
+            
+            <div class="expiry-note">
+                ⚠ This OTP will expire in 5 minutes
+            </div>
+            
+            <div class="warning">
+                <strong>Security Tip:</strong> If you didn't request this password reset, please ignore this email or contact our support team immediately.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p style="margin-top: 15px; font-size: 12px; color: #a0aec0;">
+                © ${new Date().getFullYear()} StockWise. All rights reserved.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+  `,
     });
 
     res.status(200).json({
@@ -188,7 +353,7 @@ export const VerifyOTP = async (req, res, next) => {
     await user.save();
 
     const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "10m", 
+      expiresIn: "10m",
     });
 
     res.status(200).json({
